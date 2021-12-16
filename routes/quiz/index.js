@@ -38,6 +38,44 @@ module.exports = async function (fastify, opts) {
     }
   });
 
+  //getQuiz by id
+  fastify.get('/getQuiz', async function (request, reply) {
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+
+    const id = request.query.quiz_id
+    const query = gql`
+    {
+      quizById(id:${id}) {
+        id
+        title
+        status
+        questionsByQuizIdList {
+          id
+          title
+          createAt
+          judge
+          optionsByQuestionIdList {
+            id
+            title
+          }
+          answersByQuestionIdList(filter: {userId: {equalTo: 123}}) {
+            optionId
+          }
+        }
+      }
+    }
+    `
+    try {
+      const data = await graphQLClient.request(query)
+      return data
+    } catch (error) {
+      return error
+    }
+  });
+
   //getQuizs
   fastify.get('/getQuizs', async function(request, reply) {
 
@@ -92,38 +130,5 @@ module.exports = async function (fastify, opts) {
   console.log(JSON.stringify(data, undefined, 2))
     return data;
   });
-
-  fastify.get('/getQuiz', async function(request, reply) {
-    const graphQLClient = new GraphQLClient(endpoint, {
-      mode: 'cors',
-    })
-  
-    const mutation = gql`
-    {
-      quizById(id:${request.query.id}) {
-        id
-        title
-        status
-        questionsByQuizIdList {
-          id
-          title
-          createAt
-          judge
-          optionsByQuestionIdList {
-            id
-            title
-          }
-          answersByQuestionIdList(filter: {userId: {equalTo: 123}}) {
-            optionId
-          }
-        }
-      }
-    }
-  `
-
-    const data = await graphQLClient.request(mutation)
-
-    return data;
-  })
 
 }

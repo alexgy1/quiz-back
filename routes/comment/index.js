@@ -11,16 +11,16 @@ module.exports = async function (fastify, opts) {
       mode: 'cors',
     })
   
-    const mutation = gql`
+    const query = gql`
     {
-      allCommentsList(condition: {questionId: ${request.query.questionId}}, first:${request.query.total}, offset:${request.query.offset}, orderBy: CREATE_AT_DESC) {
+      allCommentsList(condition: {questionId: ${request.query.question_id}}, first:${request.query.total}, offset:${request.query.offset}, orderBy: CREATE_AT_DESC) {
         id
         userByUserId {
           id
           userName
         }
         content
-        commentreactionsByCommentIdList (condition: {userId:${request.query.id}}) {
+        commentreactionsByCommentIdList (condition: {userId:${request.query.user_id}}) {
           reactionType,
           id
         }
@@ -33,7 +33,7 @@ module.exports = async function (fastify, opts) {
     }
   `
 
-    const data = await graphQLClient.request(mutation)
+    const data = await graphQLClient.request(query)
 
     return data;
   })

@@ -6,6 +6,14 @@ const AutoLoad = require('fastify-autoload')
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
 
+  fastify.register(require('fastify-raw-body'), {
+    field: 'rawBody', 
+    global: false, 
+    encoding: 'utf8', 
+    runFirst: true, 
+    routes: [] 
+  })
+
   // Do not touch the following lines
 
   // This loads all plugins defined in plugins
