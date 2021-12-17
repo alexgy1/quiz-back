@@ -8,8 +8,8 @@ const endpoint = 'http://90.84.178.156:3001/graphql'
 module.exports = async function (fastify, opts) {
 
 
-  fastify.get('/user', async function(request, reply) {
-    
+  fastify.get('/login', async function(request, reply) {
+    return "pong"
   })
 
   fastify.post('/submitAnswers', {config: {
