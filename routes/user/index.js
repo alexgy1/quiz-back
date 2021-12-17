@@ -20,13 +20,13 @@ module.exports = async function (fastify, opts) {
         mode: 'cors',
       })
 
-      let quiz = JSON.parse(request.rawBody);
-      
+      let json = JSON.parse(request.rawBody);
+
       let gqls = "{";
-      quiz.questionsByQuizIdList.forEach((question, index)=> {
+      json.questionsByQuizIdList.forEach((question, index)=> {
         gqls += `c${index}: createAnswer (input: {`
         let optionId = question.answersByQuestionIdList[0].optionId;
-        gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: 103, createAt: "${new Date().toISOString()}"}`
+        gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: 123, createAt: "${new Date().toISOString()}"}`
         gqls += `}) {answer {questionId optionId userId createAt}}`
       });
       gqls += "}"

@@ -102,9 +102,9 @@ module.exports = async function (fastify, opts) {
         filter += `, filter: {status: {equalTo: "closed"}}`
     }
   
-    const mutation = gql`
+    const query = gql`
     {
-      allQuizzesList(first:20, offset:0, orderBy: END_AT_DESC, ${filter}) {
+      allQuizzesList(first:${request.query.total}, offset:${request.query.offset}, orderBy: END_AT_DESC, ${filter}) {
         id
         title
         description
@@ -120,15 +120,8 @@ module.exports = async function (fastify, opts) {
     }
   `
 
-  const variables = {
-    total: 10,
-    offset: 0,
-  }
-
-  const data = await graphQLClient.request(mutation)
-
-  console.log(JSON.stringify(data, undefined, 2))
-    return data;
+   const data = await graphQLClient.request(query)
+   return data;
   });
 
 }

@@ -2,9 +2,16 @@
 
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
+const fastify = require('fastify')()
 
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
+
+  fastify.register(require('fastify-cors'), (instance) => (req, callback) => {
+    let corsOptions;
+    corsOptions = { origin: true }
+    callback(null, corsOptions)
+  })
 
   fastify.register(require('fastify-raw-body'), {
     field: 'rawBody', 
@@ -12,6 +19,13 @@ module.exports = async function (fastify, opts) {
     encoding: 'utf8', 
     runFirst: true, 
     routes: [] 
+  })
+
+  fastify.addHook('onRequest', (request, reply, done) => {
+    //reply.statusCode = 400
+    //done(new Error("user not authorized"))
+    //TODO do user authroization check
+    done()
   })
 
   // Do not touch the following lines
