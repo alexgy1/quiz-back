@@ -1,0 +1,18 @@
+name: Command via SSH
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: deploy quiz webapp in demo server
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: cd /home/cloud/cc/code/quiz-back/ && git pull origin main && npm install
+          host: ${{ secrets.HOST }}
+          username: cloud
+          privateKey: ${{ secrets.PRIVATE_KEY}}
+        env:
+          CI: true
