@@ -12,7 +12,7 @@ module.exports = async function (fastify, opts) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
     })
-
+    console.log(request.headers.user);
     const query = gql`
     {
       allQuizzesList(filter: {status: {equalTo: "open"}} ,orderBy: END_AT_ASC) {
@@ -23,7 +23,7 @@ module.exports = async function (fastify, opts) {
         startAt
         endAt
         questionsByQuizIdList {
-          answersByQuestionIdList (filter: {userId: {equalTo: 123}}) {
+          answersByQuestionIdList (filter: {userId: {equalTo: "${request.headers.user.id}"}}) {
             id
           }
         }
@@ -44,7 +44,8 @@ module.exports = async function (fastify, opts) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
     })
-
+    console.log("===================")
+    console.log(request.headers.user)
     const id = request.query.quiz_id
     const query = gql`
     {
@@ -61,7 +62,7 @@ module.exports = async function (fastify, opts) {
             id
             title
           }
-          answersByQuestionIdList(filter: {userId: {equalTo: 123}}) {
+          answersByQuestionIdList(filter: {userId: {equalTo: "${request.headers.user.id}"}}) {
             optionId
           }
         }

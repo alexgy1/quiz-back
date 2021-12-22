@@ -3,13 +3,14 @@
 const path = require('path')
 const AutoLoad = require('fastify-autoload')
 const fastify = require('fastify')()
+const userVerfiy = require('./service/user_service')
 
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
 
   fastify.register(require('fastify-cors'), (instance) => (req, callback) => {
     let corsOptions;
-    corsOptions = { origin: true }
+    corsOptions = { origin: ["http://localhost:3000"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
     callback(null, corsOptions)
   })
 
@@ -21,11 +22,19 @@ module.exports = async function (fastify, opts) {
     routes: [] 
   })
 
-  fastify.addHook('onRequest', (request, reply, done) => {
-    //reply.statusCode = 400
-    //done(new Error("user not authorized"))
-    //TODO do user authroization check
-    done()
+  fastify.addHook('onRequest', async (request, reply) => {
+    if(request.routerPath == '/user/login') {
+      return
+    }
+    let user = false;
+    if(request.headers.cookie) {
+      user = await userVerfiy.verifyToken(request.headers.cookie.split("=")[1], false)
+    }
+    if(!user) {
+      reply.statusCode = 400
+      return new Error("user not authorized") 
+    }
+    request.headers.user = user;
   })
 
   // Do not touch the following lines

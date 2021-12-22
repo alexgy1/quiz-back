@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bent": "^7.3.12",
     "fastify": "^3.0.0",
     "fastify-autoload": "^3.3.1",
     "fastify-cli": "^2.14.0",
