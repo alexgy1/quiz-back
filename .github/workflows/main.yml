@@ -10,7 +10,7 @@ jobs:
       - name: deploy quiz webapp in demo server
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd /home/cloud/cc/code/quiz-back/ && git pull origin main && npm install && pm2 restart 15
+          command: cd /home/cloud/cc/code/quiz-back/ && git pull origin main && npm install && pm2 restart 9
           host: ${{ secrets.HOST }}
           username: cloud
           privateKey: ${{ secrets.PRIVATE_KEY}}
