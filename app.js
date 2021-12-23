@@ -23,18 +23,18 @@ module.exports = async function (fastify, opts) {
   })
 
   fastify.addHook('onRequest', async (request, reply) => {
-    // if(request.routerPath == '/user/login') {
-    //   return
-    // }
-    // let user = false;
-    // if(request.headers.cookie) {
-    //   user = await userVerfiy.verifyToken(request.headers.cookie.split("=")[1], false)
-    // }
-    // if(!user) {
-    //   reply.statusCode = 400
-    //   return new Error("user not authorized") 
-    // }
-    request.headers.user = {id: "61c2e9fee95cb68085e36ef0", email: "cheng.chen@orange.com"};
+    if(request.routerPath == '/user/login') {
+      return
+    }
+    let user = false;
+    if(request.headers.cookie) {
+      user = await userVerfiy.verifyToken(request.headers.cookie.split("=")[1], false)
+    }
+    if(!user) {
+      reply.statusCode = 400
+      return new Error("user not authorized") 
+    }
+    request.headers.user = user;
   })
 
   // Do not touch the following lines
