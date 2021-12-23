@@ -50,6 +50,7 @@ module.exports = async function (fastify, opts) {
         id
         title
         status
+        isJudged
         questionsByQuizIdList {
           id
           title
@@ -108,7 +109,7 @@ module.exports = async function (fastify, opts) {
         description
         startAt
         endAt
-        isMarked
+        isJudged 
         chipsByQuizIdList (condition: {
           userId: "${request.headers.user.id}" 
         }) {
