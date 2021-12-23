@@ -4,13 +4,18 @@ const path = require('path')
 const AutoLoad = require('fastify-autoload')
 const fastify = require('fastify')()
 const userVerfiy = require('./service/user_service')
+const config = require('config');
+
 
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
 
   fastify.register(require('fastify-cors'), (instance) => (req, callback) => {
     let corsOptions;
-    corsOptions = { origin: ["http://90.84.177.247:3000"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+    const frontendHost = config.get('endpoint.frontend.host');
+    console.log("=========================")
+    console.log(frontendHost);
+    corsOptions = { origin: [frontendHost], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
     callback(null, corsOptions)
   })
 

@@ -3,6 +3,7 @@
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
 const userVerfiy = require('../../service/user_service')
+const config = require('config');
 
 
 const endpoint = 'http://90.84.178.156:3001/graphql'
@@ -34,7 +35,28 @@ module.exports = async function (fastify, opts) {
       createUserIfNotExist(user)
     } 
     reply.header('set-cookie', "orange_quiz_token="+token+";path=/;expires=2147483647")
-    reply.redirect(302, 'http://90.84.177.247:3000')
+    const frontendHost = config.get('endpoint.frontend.host');
+    reply.redirect(302, frontendHost)
+  })
+
+  fastify.get('/getUser', async function(request, reply) {
+    let id = request.headers.user.id;
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+  
+    const query = gql`
+    {
+      userById(id: "${id}") {
+        id
+        userName
+        email
+      }
+    }
+  `
+    const data = await graphQLClient.request(query)
+    return data;
   })
 
   fastify.post('/submitAnswers', {config: {

@@ -1,0 +1,10 @@
+{
+  "endpoint": {
+    "frontend": {
+      "host": "http://localhost:3000"
+    },
+    "backend": {
+      "host": "http://localhost:3111"
+    }
+  }
+}

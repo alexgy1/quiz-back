@@ -12,7 +12,6 @@ module.exports = async function (fastify, opts) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
     })
-    console.log(request.headers.user);
     const query = gql`
     {
       allQuizzesList(filter: {status: {equalTo: "open"}} ,orderBy: END_AT_ASC) {
