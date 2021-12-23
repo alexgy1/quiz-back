@@ -34,7 +34,7 @@ module.exports = async function (fastify, opts) {
       createUserIfNotExist(user)
     } 
     reply.header('set-cookie', "token="+token+";path=/")
-    reply.redirect(302, 'http://90.84.178.156:3000')
+    reply.redirect(302, 'http://90.84.177.247:3000')
   })
 
   fastify.post('/submitAnswers', {config: {
