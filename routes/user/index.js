@@ -108,11 +108,12 @@ module.exports = async function (fastify, opts) {
       json.questionsByQuizIdList.forEach((question, index)=> {
         gqls += `c${index}: createAnswer (input: {`
         let optionId = question.answersByQuestionIdList[0].optionId;
-        gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: "${request.query.offset}", createAt: "${new Date().toISOString()}"}`
+        gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: "${request.headers.user.id}", createAt: "${new Date().toISOString()}"}`
         gqls += `}) {answer {questionId optionId userId createAt}}`
       });
       gqls += "}"
 
+      console.log(gqls)
       const data = await graphQLClient.request(gql`mutation ${gqls}`)
       return data
     }
