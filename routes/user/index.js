@@ -12,10 +12,10 @@ const createUserIfNotExist = async (user) => {
   const graphQLClient = new GraphQLClient(endpoint, {
     mode: 'cors',
   })
-
+  let userName = user.email.split("@")[0];
   const mutation = gql`
   {
-    createuserifnotexist (input: {_userid: "${user.id}", _email:"${user.email}", _username: "${user.email}"})  {
+    createuserifnotexist (input: {_userid: "${user.id}", _email:"${user.email}", _username: "${userName}"})  {
       results {id userName userEmail}
     }
   }`
