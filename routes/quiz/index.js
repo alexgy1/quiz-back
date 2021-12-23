@@ -44,8 +44,6 @@ module.exports = async function (fastify, opts) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
     })
-    console.log("===================")
-    console.log(request.headers.user)
     const id = request.query.quiz_id
     const query = gql`
     {
@@ -113,14 +111,13 @@ module.exports = async function (fastify, opts) {
         endAt
         isMarked
         chipsByQuizIdList (condition: {
-          userId: 109
+          userId: "${request.headers.user.id}" 
         }) {
             score
         }
       }
     }
   `
-
    const data = await graphQLClient.request(query)
    return data;
   });
