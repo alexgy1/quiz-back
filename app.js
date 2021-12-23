@@ -10,7 +10,7 @@ module.exports = async function (fastify, opts) {
 
   fastify.register(require('fastify-cors'), (instance) => (req, callback) => {
     let corsOptions;
-    corsOptions = { origin: ["http://90.84.178.156:3000"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+    corsOptions = { origin: ["*"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
     callback(null, corsOptions)
   })
 
