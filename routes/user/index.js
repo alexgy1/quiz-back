@@ -33,7 +33,7 @@ module.exports = async function (fastify, opts) {
     if(user) {
       createUserIfNotExist(user)
     } 
-    reply.header('set-cookie', "token="+token+";path=/")
+    reply.header('set-cookie', "orange_quiz_token="+token+";path=/;expires=2147483647")
     reply.redirect(302, 'http://90.84.177.247:3000')
   })
 

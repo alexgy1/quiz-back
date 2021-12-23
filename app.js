@@ -14,6 +14,8 @@ module.exports = async function (fastify, opts) {
     callback(null, corsOptions)
   })
 
+  fastify.register(require('fastify-cookie'))
+
   fastify.register(require('fastify-raw-body'), {
     field: 'rawBody', 
     global: false, 
@@ -28,7 +30,8 @@ module.exports = async function (fastify, opts) {
     }
     let user = false;
     if(request.headers.cookie) {
-      user = await userVerfiy.verifyToken(request.headers.cookie.split("=")[1], false)
+      let token = request.cookies.orange_quiz_token
+      user = await userVerfiy.verifyToken(token, false)
     }
     if(!user) {
       reply.statusCode = 400
