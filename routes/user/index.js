@@ -59,6 +59,41 @@ module.exports = async function (fastify, opts) {
     return data;
   })
 
+  fastify.post('/updateUser', {config: {
+      rawBody: true
+    }, 
+    handler: async function(request, reply) {
+    let id = request.headers.user.id;
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+    
+    let json = JSON.parse(request.rawBody);
+    console.log(json);
+    const mutation = gql`
+    mutation { updateUserById(input: {id: "${request.headers.user.id}", userPatch: {userName: "${json.userName}"}}) {
+        user {
+          userName
+        }
+      }
+    }`
+
+    try {
+      const data = await graphQLClient.request(mutation)
+      return data;
+    }
+    catch(err) {
+      if (err.response && err.response.errors && err.response.errors[0] 
+          && err.response.errors[0].message && err.response.errors[0].message.startsWith("duplicate key value violates")) {
+            reply.statusCode = 400
+            console.log("username is used")
+            return { message: 'Username\'s already token, please choose another name' }
+      }
+    }
+    
+  }})
+
   fastify.post('/submitAnswers', {config: {
       rawBody: true
     }, 

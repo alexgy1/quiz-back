@@ -39,7 +39,7 @@ module.exports = async function (fastify, opts) {
       user = await userVerfiy.verifyToken(token, false)
     }
     if(!user) {
-      reply.statusCode = 400
+      reply.statusCode = 401
       return new Error("user not authorized") 
     }
     request.headers.user = user;
