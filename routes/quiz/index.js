@@ -51,6 +51,7 @@ module.exports = async function (fastify, opts) {
         title
         status
         isJudged
+        endAt
         questionsByQuizIdList {
           id
           title
