@@ -5,7 +5,7 @@ const gql = require('graphql-request').gql;
 const schedule = require("node-schedule")
 
 //schedule open and close related quiz
-schedule.scheduleJob('* 10 * * *', function(){
+schedule.scheduleJob('0/5 * * * *', function(){
   console.log("schedule start ");
   enableQuiz();
   disableQuiz();
