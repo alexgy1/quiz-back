@@ -104,18 +104,38 @@ module.exports = async function (fastify, opts) {
 
       let json = JSON.parse(request.rawBody);
 
-      let gqls = "{";
-      json.questionsByQuizIdList.forEach((question, index)=> {
-        gqls += `c${index}: createAnswer (input: {`
-        let optionId = question.answersByQuestionIdList[0].optionId;
-        gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: "${request.headers.user.id}", createAt: "${new Date().toISOString()}"}`
-        gqls += `}) {answer {questionId optionId userId createAt}}`
-      });
-      gqls += "}"
+      let gql_quizbyid = gql`
+        { quizById(id:${json.quizId}){
+            questionsByQuizIdList {
+              answersByQuestionIdList(condition: {userId: "${request.headers.user.id}"}) {
+                id
+              }
+            }
+            status
+          }
+        } `
 
-      console.log(gqls)
-      const data = await graphQLClient.request(gql`mutation ${gqls}`)
-      return data
+      const data = await graphQLClient.request(gql_quizbyid)
+      if(data.quizById && data.quizById.status) {
+        let answers = data.quizById.questionsByQuizIdList[0].answersByQuestionIdList.length;
+        if(data.quizById.status == "open" && answers == 0) {
+          let gqls = "{";
+          json.questionsByQuizIdList.forEach((question, index)=> {
+            gqls += `c${index}: createAnswer (input: {`
+            let optionId = question.answersByQuestionIdList[0].optionId;
+            gqls += `answer: {questionId: ${question.id}, optionId: ${optionId}, userId: "${request.headers.user.id}", createAt: "${new Date().toISOString()}"}`
+            gqls += `}) {answer {questionId optionId userId createAt}}`
+          });
+          gqls += "}"
+
+          console.log(gqls)
+          const data = await graphQLClient.request(gql`mutation ${gqls}`)
+          return data
+        }
+      }
+      
+      reply.statusCode = 400
+      return { message: 'quiz\'s closed or your have already answered' }
     }
   })
 }
