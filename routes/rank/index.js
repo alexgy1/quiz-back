@@ -10,10 +10,15 @@ module.exports = async function (fastify, opts) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
     })
-  
+    
+    let start = new Date();
+    start.setDate(start.getDate()-7)
+    start = start.toISOString();
+    let end = new Date().toISOString();
+
     const mutation = gql`
     {
-      rankingsList(total: ${request.query.total}, _offset: ${request.query.offset}, _begin: "${request.query.begin}", _end:"${request.query.end}") {
+      rankingsList(total: ${request.query.total}, _offset: ${request.query.offset}, _begin: "${start}", _end:"${end}") {
         score
         userId
         userName
