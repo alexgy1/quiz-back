@@ -2,7 +2,7 @@
 
 const bent = require('bent');
 
-const ORANGE_AUTH_TOKEN_VERIFICATION_URL = "https://authentication.orangelabschina.cn:1805/v2/codeauth/verify?token=";
+const ORANGE_AUTH_TOKEN_VERIFICATION_URL = "https://authentication.orangelabschina.cn/v2/codeauth/verify?token=";
 const CLIENT_ID = "winterolympic2022";
 const CLIENT_ID_ADMIN = "";
 const API_KEY = "fqOOLBk8NmpdAYaTln5uLbBkhU6FPwNMQAvp8BwttRDUuTTSS6K_y-_f4N9XuUNh";
