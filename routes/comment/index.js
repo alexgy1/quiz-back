@@ -3,7 +3,7 @@
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
 
-const endpoint = 'http://90.84.178.156:3001/graphql'
+const endpoint = 'http://127.0.0.1:6000/graphql'
 
 module.exports = async function (fastify, opts) {
   fastify.get('/getComments', async function(request, reply) {
