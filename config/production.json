@@ -1,10 +1,10 @@
 {
   "endpoint": {
     "frontend": {
-      "host": "http://90.84.177.247:3000"
+      "host": "https://quiz.orangelabschina.cn:2022"
     },
     "backend": {
-      "host": "http://90.84.177.247:3111"
+      "host": "https://quiz.orangelabschina.cn:2023"
     }
   }
 }
