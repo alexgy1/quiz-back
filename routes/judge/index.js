@@ -5,7 +5,7 @@ const gql = require('graphql-request').gql;
 const schedule = require("node-schedule")
 
 //schedule open and close related quiz
-schedule.scheduleJob('0/5 * * * *', function(){
+schedule.scheduleJob('0/1 * * * *', function(){
   console.log("schedule start ");
   enableQuiz();
   disableQuiz();
@@ -42,6 +42,7 @@ async function enableQuiz(){
     mode: 'cors',
   })
   let date = new Date().toISOString();
+  console.log("date*****"+ date)
   const quiz = gql`
   {    
     allQuizzesList(
@@ -112,6 +113,26 @@ async function judgeQuiz(){
 
 const endpoint = 'http://127.0.0.1:6000/graphql'
 
+
+
+// {
+//   "id": 1,
+//   "questionsByQuizIdList": [
+//       {
+//       "id": 1,
+//       "judge": 1
+//       },
+//       {
+//       "id": 2,
+//       "judge": 3
+//       },
+//       {
+//       "id": 3,
+//       "judge": 5
+//       }
+//   ]
+// }
+
 module.exports = async function (fastify, opts) {
   //添加答案
   fastify.post('/judgement', {config: {
@@ -123,52 +144,73 @@ module.exports = async function (fastify, opts) {
       })
 
       let quiz = JSON.parse(request.rawBody);
-    
       let gqls = `{`;
       quiz.questionsByQuizIdList.forEach((question, index)=> {
-        gqls += `c${index}: updateQuestionById (input: {id :${question.id}, questionPatch: {judge: ${question.judge}}){clientMutationId}`
+        gqls += `c${index}: updateQuestionById (input: {id :${question.id}, questionPatch: {judge: ${question.judge}}}){clientMutationId}`
       });
       gqls += `updateQuizById(input: {id: ${quiz.id}, quizPatch: {isJudged: 1}}){clientMutationId}}`;
+      console.log(gqls)
       graphQLClient.setHeader('X-Mutation-Atomicity', 'on');
       const data = await graphQLClient.request(gql`mutation ${gqls}`);
-
-      // const updateJudgeStatus = gql`
-      // mutation{
-      //   updateQuizById(input: {id: ${quiz.id}, quizPatch: {isJudged: 1}}){clientMutationId}
-      // }`
-      // const updateResult = await graphQLClient.request(updateJudgeStatus)
       return data
     }
 })
+// {
+//   "quizById": {
+//       "title": "TestEuroCup1",
+//       "description": "null",
+//       "banner": "null",
+//       "startAt": "2021-12-23T16:00:00+00:00",
+//       "endAt": "2021-12-24T06:00:00+00:00",
+//       "questionsByQuizIdList": [
+//       {
+//           "title": "Who will win the match between  Wales VS Denmark Will there be overtime in the match Wales VS Denmark ?",
+//           "judge": 5,
+//           "score": 1,
+//           "optionsByQuestionIdList": [
+//           {
+//               "title": "Denmark"
+//           },
+//           {
+//               "title": "Wales"
+//           }
+//           ]
+//       }
+//       ]
+//   }
+// }
 
 //创建quiz
   fastify.post('/create', {config: {rawBody: true}, handler: async function(request, reply) {
     const graphQLClient = new GraphQLClient(endpoint, {mode: 'cors',})
     
-    let quiz = JSON.parse(request.rawBody);
-    let currendDate = new Date();
+    let quiz = JSON.parse(request.rawBody).quizById;
+    let currendDate = new Date().toISOString();
     let errMessage = {errorKey: 'date invalid'};
-    if(quiz.startAt < currendDate || quiz.endAt < currendDate || quiz.startAt < quiz.endAt){
+    console.log(quiz.startAt < currendDate)
+    console.log(quiz.endAt < currendDate )
+    console.log(quiz.startAt < quiz.endAt)
+    if(quiz.startAt < currendDate || quiz.endAt < currendDate || quiz.startAt > quiz.endAt){
       return JSON.stringify(errMessage);
     }
     let createQuery = `mutation{`
     createQuery += `createQuiz (input: {
       quiz: {
-        title: ${quiz.title}, 
-        description: ${quiz.description},
-        banner: ${quiz.banner},
+        title: "${quiz.title}", 
+        description: "${quiz.description}",
+        banner: "${quiz.banner}",
         status: "created", 
-        createAt: ${quiz.startAt},
-        endAt: ${quiz.endAt},
+        createAt: "${quiz.startAt}",
+        endAt: "${quiz.endAt}",
         isMarked: 0,
         isVerified: 0,
         isJudged: 0,`;
     createQuery += `questionsUsingId:{create:[`;
     quiz.questionsByQuizIdList.forEach(function(question, questionId){
-      createQuery += `{title: ${question.title}, judge: ${question.judge}, createAt: ${new Date().toISOString()}, score: ${question.score},`;
+      createQuery += `{title: "${question.title}", createAt: "${new Date().toISOString()}", score: ${question.score},`;
       createQuery += `optionsUsingId:{create:[`;
       question.optionsByQuestionIdList.forEach(function(option, optinIndex){
-        createQuery += `{title:${option.title}}`;
+        createQuery += `{title:"${option.title}"}`;
       });
       createQuery += `]}}`;
     });
@@ -178,7 +220,10 @@ module.exports = async function (fastify, opts) {
     return data
   }
   })
-
+  
+// {
+//     "quizId": 405
+// }
 //审批quiz
   fastify.post('/verify', {config: {
       rawBody: true
@@ -187,19 +232,17 @@ module.exports = async function (fastify, opts) {
       const graphQLClient = new GraphQLClient(endpoint, {
         mode: 'cors',
       })
-      //graphQLClient.setHeader('X-Mutation-Atomicity', 'on');
 
       let quiz = JSON.parse(request.rawBody);
-
       const quizStatus = gql`{
         quizById(id: ${quiz.quizId}){
           status
           startAt
         }
       }`
-      let currendDate = new Date();
+      let currendDate = new Date().toISOString();
       const statusData = await graphQLClient.request(quizStatus);
-      if(statusData.status == "created" && statusData.startAt > currendDate){
+      if(statusData.quizById.status == "created" && statusData.quizById.startAt > currendDate){
         const verifyQuiz = gql`
         mutation{
           updateQuizById(input: {id: ${quiz.quizId}, quizPatch: {isVerified: 1}}){
@@ -209,6 +252,7 @@ module.exports = async function (fastify, opts) {
         const data = await graphQLClient.request(verifyQuiz)
         return data
       }
+      return '';
     }
   })
 }
