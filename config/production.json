@@ -4,7 +4,14 @@
       "host": "https://quiz.orangelabschina.cn"
     },
     "backend": {
-      "host": "https://quiz.orangelabschina.cn"
+      "host": "https://quizservice.orangelabschina.cn"
+    },
+    "graphql" : {
+      "host": "http://127.0.0.1:6000/graphql"
     }
+  },
+  "auth": {
+    "key": "fqOOLBk8NmpdAYaTln5uLbBkhU6FPwNMQAvp8BwttRDUuTTSS6K_y-_f4N9XuUNh",
+    "clientid": "winterolympic2022"
   }
 }

@@ -6,7 +6,7 @@ const userVerfiy = require('../../service/user_service')
 const config = require('config');
 
 
-const endpoint = 'http://127.0.0.1:6000/graphql'
+const endpoint = config.get('endpoint.graphql.host');
 
 const createUserIfNotExist = async (user) => {
   const graphQLClient = new GraphQLClient(endpoint, {

@@ -5,6 +5,13 @@
     },
     "backend": {
       "host": "http://localhost:3111"
+    },
+    "graphql" : {
+      "host": "http://localhost:6000/graphql"
     }
+  },
+  "auth": {
+    "key": "RreHZ0cO-XfOftzWKwKLY6qlOeLvPoRKCdnwxl21CN2gIRalAyBZelDyRH82t0Z1",
+    "clientid": "winterolympic2022"
   }
 }

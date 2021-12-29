@@ -2,8 +2,10 @@
 
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
+const config = require('config');
 
-const endpoint = 'http://127.0.0.1:6000/graphql'
+const endpoint = config.get('endpoint.graphql.host');
+console.log(endpoint)
 
 module.exports = async function (fastify, opts) {
   fastify.get('/getWeekRank', async function(request, reply) {

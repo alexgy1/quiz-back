@@ -3,6 +3,7 @@
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
 const schedule = require("node-schedule")
+const config = require('config');
 
 //schedule open and close related quiz
 schedule.scheduleJob('0/1 * * * *', function(){
@@ -111,7 +112,7 @@ async function judgeQuiz(){
   }
 }
 
-const endpoint = 'http://127.0.0.1:6000/graphql'
+const endpoint = config.get('endpoint.graphql.host');
 
 
 
