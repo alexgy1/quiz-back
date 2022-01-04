@@ -9,7 +9,7 @@
   "scripts": {
     "test": "tap \"test/**/*.test.js\"",
     "start": "fastify start -l info app.js",
-    "dev": "fastify start -w -l info -P app.js"
+    "dev": "NODE_ENV=development fastify start -w -l info -P app.js -p 3111"
   },
   "keywords": [],
   "author": "",

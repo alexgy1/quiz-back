@@ -1,16 +1,17 @@
 {
   "endpoint": {
     "frontend": {
-      "host": "http://localhost:3000"
+      "host": "http://127.0.0.1:3000"
     },
     "backend": {
-      "host": "http://localhost:3111"
+      "host": "http://127.0.0.1:3111"
     },
     "graphql" : {
-      "host": "http://localhost:6000/graphql"
+      "host": "http://127.0.0.1:5000/graphql"
     }
   },
   "auth": {
+    "url": "https://authenticationpre.orangelabschina.cn/v2/codeauth/verify?token=",
     "key": "RreHZ0cO-XfOftzWKwKLY6qlOeLvPoRKCdnwxl21CN2gIRalAyBZelDyRH82t0Z1",
     "clientid": "winterolympic2022"
   }

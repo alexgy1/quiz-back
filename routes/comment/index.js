@@ -7,6 +7,42 @@ const config = require('config');
 const endpoint = config.get('endpoint.graphql.host');
 
 module.exports = async function (fastify, opts) {
+  fastify.post('/addComment', {config: {
+    rawBody: true},
+    handler: async function(request, reply) {
+      let json = JSON.parse(request.rawBody);
+      const graphQLClient = new GraphQLClient(endpoint, {
+        mode: 'cors',
+      })
+
+      
+      let mutation = gql`mutation {
+        createComment (input: {comment: {userId: "${request.headers.user.id}", content:"${json.content}", 
+          questionId: ${json.questionId}, likes: 0, dislikes:0}}) {
+          comment {
+            id 
+            userByUserId {id, userName}
+            content
+            createAt
+            likes
+            dislikes
+            reply
+            commentreactionsByCommentIdList (condition:{userId: "${request.headers.user.id}"}) {
+              reactionType
+              id
+            }
+          }
+      }}`
+      
+      try {
+        const data = await graphQLClient.request(mutation)
+        return data;
+      }
+      catch(err) {
+        return { message: 'error while posting comment' } 
+      }
+    }
+  });
   fastify.get('/getComments', async function(request, reply) {
     const graphQLClient = new GraphQLClient(endpoint, {
       mode: 'cors',
@@ -21,7 +57,7 @@ module.exports = async function (fastify, opts) {
           userName
         }
         content
-        commentreactionsByCommentIdList (condition: {userId:${request.query.user_id}}) {
+        commentreactionsByCommentIdList (condition: {userId:"${request.query.user_id}"}) {
           reactionType,
           id
         }
