@@ -13,9 +13,14 @@ module.exports = async function (fastify, opts) {
   fastify.register(require('fastify-cors'), (instance) => (req, callback) => {
     let corsOptions;
     const frontendHost = config.get('endpoint.frontend.host');
-    console.log("=========================")
     console.log(frontendHost);
-    corsOptions = { origin: [frontendHost], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+    if(frontendHost == "https://quizpre.orangelabschina.cn") {
+      console.log("============ testing =============")
+      corsOptions = { origin: [frontendHost, "*"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+    } else {
+      corsOptions = { origin: [frontendHost], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+    }
+   
     callback(null, corsOptions)
   })
 
