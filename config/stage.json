@@ -11,6 +11,7 @@
     }
   },
   "auth": {
+    "url": "https://authenticationpre.orangelabschina.cn/v2/codeauth/verify?token=",
     "key": "RreHZ0cO-XfOftzWKwKLY6qlOeLvPoRKCdnwxl21CN2gIRalAyBZelDyRH82t0Z1",
     "clientid": "winterolympic2022"
   }

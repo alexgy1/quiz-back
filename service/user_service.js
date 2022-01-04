@@ -4,7 +4,7 @@ const bent = require('bent');
 const config = require('config');
 
 
-const ORANGE_AUTH_TOKEN_VERIFICATION_URL = "https://authentication.orangelabschina.cn/v2/codeauth/verify?token=";
+const ORANGE_AUTH_TOKEN_VERIFICATION_URL = config.get('auth.url');
 const CLIENT_ID = config.get('auth.clientid');
 const CLIENT_ID_ADMIN = "";
 const API_KEY = config.get('auth.key');
