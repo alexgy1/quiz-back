@@ -39,6 +39,18 @@ module.exports = async function (fastify, opts) {
     reply.redirect(302, frontendHost)
   })
 
+  fastify.get('/adminlogin', async function(request, reply) {
+    
+    let token = request.query.token
+    let user = await userVerfiy.verifyToken(request.query.token, false)
+    if(user) {
+      createUserIfNotExist(user)
+    } 
+    reply.header('set-cookie', "orange_quiz_token="+token+";path=/;expires=2147483647")
+    const frontendHost = config.get('endpoint.frontend.host');
+    reply.redirect(302, frontendHost)
+  })
+
   fastify.get('/getUser', async function(request, reply) {
     let id = request.headers.user.id;
 

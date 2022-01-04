@@ -15,8 +15,7 @@ module.exports = async function (fastify, opts) {
     const frontendHost = config.get('endpoint.frontend.host');
     console.log(frontendHost);
     if(frontendHost == "https://quizpre.orangelabschina.cn") {
-      console.log("============ testing =============")
-      corsOptions = { origin: [frontendHost, "*"], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
+      corsOptions = { origin: [frontendHost, "http://127.0.0.1:3000"],  credentials: true, allowedHeaders: ["Cookie", "cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
     } else {
       corsOptions = { origin: [frontendHost], credentials: true, allowedHeaders: ["cookie", "X-Requested-With", "X-Prototype-Version", "Content-Type", "Origin", "Allow"], preflightContinue: true}
     }

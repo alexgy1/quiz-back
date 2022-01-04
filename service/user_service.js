@@ -14,6 +14,7 @@ module.exports = {
   verifyToken: async function(token, isAdmin) {
     const getJSON = bent('json')
     try {
+      console.log(ORANGE_AUTH_TOKEN_VERIFICATION_URL)
       const user = await getJSON(ORANGE_AUTH_TOKEN_VERIFICATION_URL + token, 
         "GET", {
           "client-id": isAdmin? CLIENT_ID_ADMIN: CLIENT_ID,
