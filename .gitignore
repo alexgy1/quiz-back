@@ -58,3 +58,4 @@ profile*
 *flamegraph*
 
 package-lock.json
+yarn.lock
