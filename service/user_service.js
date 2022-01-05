@@ -6,7 +6,7 @@ const config = require('config');
 
 const ORANGE_AUTH_TOKEN_VERIFICATION_URL = config.get('auth.url');
 const CLIENT_ID = config.get('auth.clientid');
-const CLIENT_ID_ADMIN = "";
+const API_KEY_ADMIN = config.get('auth.adminkey');
 const API_KEY = config.get('auth.key');
 
 
@@ -17,8 +17,8 @@ module.exports = {
       console.log(ORANGE_AUTH_TOKEN_VERIFICATION_URL)
       const user = await getJSON(ORANGE_AUTH_TOKEN_VERIFICATION_URL + token, 
         "GET", {
-          "client-id": isAdmin? CLIENT_ID_ADMIN: CLIENT_ID,
-          "api-key": API_KEY }
+          "client-id": CLIENT_ID,
+          "api-key": isAdmin? API_KEY_ADMIN: API_KEY }
       )
 
       return {id: user.sub, email: user.email};

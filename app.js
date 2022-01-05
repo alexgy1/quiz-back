@@ -40,7 +40,8 @@ module.exports = async function (fastify, opts) {
     let user = false;
     if(request.headers.cookie) {
       let token = request.cookies.orange_quiz_token
-      user = await userVerfiy.verifyToken(token, false)
+      let isAdminRequired = request.routerPath.includes("/judge");
+      user = await userVerfiy.verifyToken(token, isAdminRequired)
     }
     if(!user) {
       reply.statusCode = 401

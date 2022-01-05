@@ -42,7 +42,7 @@ module.exports = async function (fastify, opts) {
   fastify.get('/adminlogin', async function(request, reply) {
     
     let token = request.query.token
-    let user = await userVerfiy.verifyToken(request.query.token, false)
+    let user = await userVerfiy.verifyToken(request.query.token, true)
     if(user) {
       createUserIfNotExist(user)
     } 
