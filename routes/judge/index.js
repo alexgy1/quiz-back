@@ -3,7 +3,6 @@
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
 const schedule = require("node-schedule")
-const config = require('config');
 
 //schedule open and close related quiz
 schedule.scheduleJob('0/1 * * * *', function(){
@@ -112,7 +111,7 @@ async function judgeQuiz(){
   }
 }
 
-const endpoint = config.get('endpoint.graphql.host');
+const endpoint = 'http://90.84.178.156:3001/graphql'
 
 
 
@@ -188,9 +187,6 @@ module.exports = async function (fastify, opts) {
     let quiz = JSON.parse(request.rawBody).quizById;
     let currendDate = new Date().toISOString();
     let errMessage = {errorKey: 'date invalid'};
-    console.log(quiz.startAt < currendDate)
-    console.log(quiz.endAt < currendDate )
-    console.log(quiz.startAt < quiz.endAt)
     if(quiz.startAt < currendDate || quiz.endAt < currendDate || quiz.startAt > quiz.endAt){
       return JSON.stringify(errMessage);
     }
@@ -201,7 +197,8 @@ module.exports = async function (fastify, opts) {
         description: "${quiz.description}",
         banner: "${quiz.banner}",
         status: "created", 
-        createAt: "${quiz.startAt}",
+        createAt: "${currendDate}",
+        startAt: "${quiz.startAt}",
         endAt: "${quiz.endAt}",
         isMarked: 0,
         isVerified: 0,
@@ -216,6 +213,7 @@ module.exports = async function (fastify, opts) {
       createQuery += `]}}`;
     });
     createQuery += `]}}}){quiz {id}}}`;
+    console.log(createQuery)
     graphQLClient.setHeader('X-Mutation-Atomicity', 'on');
     const data = await graphQLClient.request(createQuery)
     return data
@@ -256,4 +254,121 @@ module.exports = async function (fastify, opts) {
       return '';
     }
   })
+
+  fastify.get('/getQuizes', async function(request, reply) {
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+    const status = request.query.status
+    let isVerified = request.query.isVerified
+    if(isVerified == undefined){
+      isVerified = 1
+    }
+    const mutation = gql`
+    {
+      allQuizzesList(condition:{status: "${status}", isVerified: ${isVerified}}){
+        id
+        title
+        createAt
+        banner
+        status
+        description
+        startAt
+        endAt
+        isMarked
+        isJudged
+        isVerified
+      }
+    }
+  `
+    const data = await graphQLClient.request(mutation)
+    return data;
+  });
+
+  fastify.get('/getQuizDetail', async function(request, reply) {
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+    const quizId = request.query.quizId
+    
+    const mutation = gql`
+    {
+      quizById(id:${quizId}){
+        questionsByQuizIdList{
+          id
+          title
+          judge
+          quizId
+          createAt
+          score
+          optionsByQuestionIdList{
+            id
+            questionId
+            title
+          }
+        }
+      }
+    }
+  `
+    const data = await graphQLClient.request(mutation)
+    return data;
+  });
+
+  //update quiz
+  fastify.post('/updateQuiz', {config: {rawBody: true}, handler: async function(request, reply) {
+    const graphQLClient = new GraphQLClient(endpoint, {mode: 'cors',})
+    let quizId = request.query.quizId
+    
+    let quiz = JSON.parse(request.rawBody).quizById;
+    let id = quiz.id
+    let result = ""
+    if(id != undefined){
+      const statusQuery = gql`
+      {
+        quizById(id:${id}){
+          status
+        }
+      }`
+      const data = await graphQLClient.request(statusQuery)
+      let status = data.quizById.status
+      if(status == "created"){
+        console.log("deededfgrngkdrngier")
+        let currendDate = new Date().toISOString();
+        let errMessage = {errorKey: 'date invalid'};
+        if(quiz.startAt < currendDate || quiz.endAt < currendDate || quiz.startAt > quiz.endAt){
+          return JSON.stringify(errMessage);
+        }
+        let createQuery = `mutation{`
+        createQuery += `deleteQuizById(input:{id: ${id}}){clientMutationId}`
+        createQuery += `createQuiz (input: {
+          quiz: {
+            title: "${quiz.title}", 
+            description: "${quiz.description}",
+            banner: "${quiz.banner}",
+            status: "created", 
+            createAt: "${currendDate}",
+            startAt: "${quiz.startAt}",
+            endAt: "${quiz.endAt}",
+            isMarked: 0,
+            isVerified: 0,
+            isJudged: 0,`;
+        createQuery += `questionsUsingId:{create:[`;
+        quiz.questionsByQuizIdList.forEach(function(question, questionId){
+          createQuery += `{title: "${question.title}", createAt: "${new Date().toISOString()}", score: ${question.score},`;
+          createQuery += `optionsUsingId:{create:[`;
+          question.optionsByQuestionIdList.forEach(function(option, optinIndex){
+            createQuery += `{title:"${option.title}"}`;
+          });
+          createQuery += `]}}`;
+        });
+        createQuery += `]}}}){quiz {id}}}`;
+        consolg.log("hereherehere")
+        graphQLClient.setHeader('X-Mutation-Atomicity', 'on');
+        result = await graphQLClient.request(createQuery)
+      }
+    }
+    return result
+  }
+  });
 }
