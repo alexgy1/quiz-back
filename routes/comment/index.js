@@ -57,7 +57,7 @@ module.exports = async function (fastify, opts) {
           userName
         }
         content
-        commentreactionsByCommentIdList (condition: {userId:"${request.query.user_id}"}) {
+        commentreactionsByCommentIdList (condition: {userId:"${request.headers.user.id}"}) {
           reactionType,
           id
         }
