@@ -17,7 +17,7 @@ module.exports = async function (fastify, opts) {
 
       
       let mutation = gql`mutation {
-        createComment (input: {comment: {userId: "${request.headers.user.id}", content:"${json.content}", 
+        createComment (input: {comment: {userId: "${request.headers.user.id}", content:"""${json.content}""", 
           questionId: ${json.questionId}, likes: 0, dislikes:0}}) {
           comment {
             id 
@@ -93,4 +93,93 @@ module.exports = async function (fastify, opts) {
 
     return data;
   });
+
+  fastify.post('/addLikeComment', {config: {
+    rawBody: true},
+    handler: async function(request, reply) {
+      let json = JSON.parse(request.rawBody);
+      const graphQLClient = new GraphQLClient(endpoint, {
+        mode: 'cors',
+      })
+    
+      const mutation = gql`
+      mutation {
+        createCommentreaction(input: {commentreaction: {userId: "${request.headers.user.id}", reactionType: 2, commentId: ${json.commentId}}}) {
+          commentreaction {id, userId, reactionType, commentId}
+        }
+      }
+    `
+
+      const data = await graphQLClient.request(mutation)
+
+      return data;
+  }});
+
+
+
+  fastify.post('/addDislikeComment', {config: {
+    rawBody: true},
+    handler: async function(request, reply) {
+      let json = JSON.parse(request.rawBody);
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+  
+    const mutation = gql`
+    mutation {
+      createCommentreaction(input: {commentreaction: {userId: "${request.headers.user.id}", reactionType: 1, commentId: ${json.commentId}}}) {
+        commentreaction {id, userId, reactionType, commentId}
+      }
+    }
+  `
+
+    const data = await graphQLClient.request(mutation)
+
+    return data;
+  }});
+
+
+  fastify.post('/removeLikeComment', {config: {
+    rawBody: true},
+    handler: async function(request, reply) {
+      let json = JSON.parse(request.rawBody);
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+  
+    const mutation = gql`
+    mutation {
+      deleteCommentreactionById (input: {id: ${json.reactionId}}) {
+        deletedCommentreactionId 
+      }
+    }
+  `
+
+    const data = await graphQLClient.request(mutation)
+
+    return data;
+  }});
+
+
+  fastify.post('/removeDislikeComment', {config: {
+    rawBody: true},
+    handler: async function(request, reply) {
+      let json = JSON.parse(request.rawBody);
+    const graphQLClient = new GraphQLClient(endpoint, {
+      mode: 'cors',
+    })
+  
+    const mutation = gql`
+    mutation {
+      deleteCommentreactionById (input: {id: ${json.reactionId}}) {
+        deletedCommentreactionId 
+      }
+    }
+  `
+
+    const data = await graphQLClient.request(mutation)
+
+    return data;
+  }});
+  
 }
