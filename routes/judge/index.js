@@ -111,7 +111,7 @@ async function judgeQuiz(){
   }
 }
 
-const endpoint = 'http://90.84.178.156:3001/graphql'
+const endpoint = config.get('endpoint.graphql.host');
 
 
 
