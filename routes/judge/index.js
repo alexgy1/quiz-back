@@ -3,6 +3,7 @@
 const GraphQLClient = require('graphql-request').GraphQLClient;
 const gql = require('graphql-request').gql;
 const schedule = require("node-schedule")
+const config = require('config');
 
 //schedule open and close related quiz
 schedule.scheduleJob('0/1 * * * *', function(){
