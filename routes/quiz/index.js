@@ -85,8 +85,8 @@ module.exports = async function (fastify, opts) {
     })
 
     let filter = ``;
-      if(request.query.start || request.query.end) {
-        filter = `, filter: {status: {equalTo: "closed"}, endAt: {`
+      if(request.query.start && request.query.end) {
+        filter = `, filter: {status: {equalTo: "closed"}, startAt: {`
         let hasStart = false;
         if(request.query.start) {
           hasStart = true;
