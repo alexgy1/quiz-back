@@ -15,7 +15,7 @@ module.exports = async function (fastify, opts) {
     })
     const query = gql`
     {
-      allQuizzesList(filter: {status: {equalTo: "open"}} ,orderBy: END_AT_ASC) {
+      allQuizzesList(filter: {status: {equalTo: "open"}} ,orderBy: END_AT_DESC) {
         id
         title
         banner
