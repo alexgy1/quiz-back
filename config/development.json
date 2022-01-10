@@ -6,7 +6,7 @@
     "backend": {
       "host": "http://127.0.0.1:3111"
     },
-    "graphql" : {
+    "graphql": {
       "host": "http://127.0.0.1:5000/graphql"
     }
   },
@@ -14,6 +14,7 @@
     "url": "https://authenticationpre.orangelabschina.cn/v2/codeauth/verify?token=",
     "key": "RreHZ0cO-XfOftzWKwKLY6qlOeLvPoRKCdnwxl21CN2gIRalAyBZelDyRH82t0Z1",
     "adminkey": "ZZ4EsHPlq6SdvG_W0ApRxQ8yHZqquAAGOXW_2qxgvdRCVyDYdmpIO8F63LpWsYA2",
-    "clientid": "winterolympic2022"
+    "clientid": "winterolympic2022",
+    "adminclientid": "winterolympic2022admin"
   }
 }
