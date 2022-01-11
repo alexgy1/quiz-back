@@ -296,6 +296,12 @@ module.exports = async function (fastify, opts) {
     const mutation = gql`
     {
       quizById(id:${quizId}){
+        title, 
+        description,
+        banner,
+        startAt,
+        endAt,
+        isMarked,
         questionsByQuizIdList{
           id
           title
